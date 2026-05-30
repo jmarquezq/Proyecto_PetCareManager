@@ -1,56 +1,43 @@
 package model;
 
+import Libreria_generica.generic;
+
 public class Mascota {
-    private String idMascota;
-    private String nombre;
-    private String especie;
-    private String raza;
-    private int edad; 
-    private String idPropietario;
+    private generic<String, String> dt_m;
 
-    public Mascota(String idMascota, String nombre, String especie, String raza, int edad, String idPropietario) {
-        this.idMascota = idMascota;
-        this.nombre = nombre;
-        this.especie = especie;
-        this.raza = raza;
-        this.edad = edad;
-        this.idPropietario = idPropietario;
+    public Mascota() {
+        dt_m = new generic<>();
     }
 
-    public String getIdMascota() { 
-    	return idMascota; 
+    public Mascota(String... data) {
+        dt_m = new generic<>(data[0].trim(), data[1].trim(), data[2].trim());
     }
-    public void setIdMascota(String idMascota) { 
-    	this.idMascota = idMascota; 
+
+    public String getNombre() {
+        return dt_m.getAttributeT1();
     }
-    public String getNombre() { 
-    	return nombre; 
+
+    public int getEdad() {
+        return Integer.parseInt(dt_m.getAttributeT2().trim());
     }
-    public void setNombre(String nombre) { 
-    	this.nombre = nombre; 
+
+    public String getEspecie() {
+        return dt_m.getAttributeS3();
     }
-    public String getEspecie() { 
-    	return especie; 
+
+    public void setNombre(String n) {
+        dt_m.setAttributeT1(n);
     }
-    public void setEspecie(String especie) { 
-    	this.especie = especie; 
+
+    public void setEdad(int e) {
+        dt_m.setAttributeT2(String.valueOf(e));
     }
-    public String getRaza() { 
-    	return raza; 
+
+    public void setEspecie(String es) {
+        dt_m.setAttributeS3(es);
     }
-    public void setRaza(String raza) { 
-    	this.raza = raza; 
-    }
-    public int getEdad() { 
-    	return edad; 
-    }
-    public void setEdad(int edad) { 
-    	this.edad = edad; 
-    }
-    public String getIdPropietario() { 
-    	return idPropietario; 
-    }
-    public void setIdPropietario(String idPropietario) { 
-    	this.idPropietario = idPropietario; 
+
+    public String info() {
+        return String.format("%s,%d,%s", getNombre(), getEdad(), getEspecie());
     }
 }
