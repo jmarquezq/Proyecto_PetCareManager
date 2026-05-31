@@ -8,7 +8,7 @@ import util.GenericDAO;
 public class LoginController {
 
     private GenericDAO<Usuario> dao =
-            new GenericDAO<>("src/datos/usuarios.txt");
+            new GenericDAO<>("src/doc/usuarios.txt");
 
     public boolean validarLogin(String username, String password) {
 
