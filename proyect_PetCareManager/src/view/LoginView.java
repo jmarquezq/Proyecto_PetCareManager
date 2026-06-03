@@ -12,8 +12,12 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 import controller.LoginController;
+import java.awt.SystemColor;
+import java.awt.Color;
+import javax.swing.ImageIcon;
+import java.awt.Font;
 
-public class ViewLogin extends JFrame {
+public class LoginView extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
@@ -27,7 +31,7 @@ public class ViewLogin extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    ViewLogin frame = new ViewLogin();
+                    LoginView frame = new LoginView();
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -39,36 +43,52 @@ public class ViewLogin extends JFrame {
     /**
      * Create the frame.
      */
-    public ViewLogin() {
+    public LoginView() {
 
         setTitle("Inicio de Sesión");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 400, 250);
+        setBounds(100, 100, 429, 240);
 
         contentPane = new JPanel();
+        contentPane.setBackground(SystemColor.inactiveCaption);
+        contentPane.setForeground(SystemColor.window);
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(null);
         setContentPane(contentPane);
 
         JLabel lblUsuario = new JLabel("Usuario:");
-        lblUsuario.setBounds(50, 50, 80, 25);
+        lblUsuario.setFont(new Font("Times New Roman", Font.BOLD, 16));
+        lblUsuario.setBounds(10, 50, 80, 25);
         contentPane.add(lblUsuario);
 
         txtUsuario = new JTextField();
-        txtUsuario.setBounds(140, 50, 180, 25);
+        txtUsuario.setBounds(100, 51, 146, 25);
         contentPane.add(txtUsuario);
 
         JLabel lblClave = new JLabel("Contraseña:");
-        lblClave.setBounds(50, 90, 80, 25);
+        lblClave.setFont(new Font("Times New Roman", Font.BOLD, 16));
+        lblClave.setBounds(10, 90, 118, 25);
         contentPane.add(lblClave);
 
         txtClave = new JPasswordField();
-        txtClave.setBounds(140, 90, 180, 25);
+        txtClave.setBounds(100, 91, 146, 25);
         contentPane.add(txtClave);
 
         JButton btnIngresar = new JButton("Ingresar");
-        btnIngresar.setBounds(140, 140, 120, 30);
+        btnIngresar.setFont(new Font("Times New Roman", Font.BOLD, 15));
+        btnIngresar.setBackground(new Color(255, 228, 225));
+        btnIngresar.setBounds(83, 141, 120, 30);
         contentPane.add(btnIngresar);
+        
+        JLabel lblImg = new JLabel("");
+        lblImg.setIcon(new ImageIcon(LoginView.class.getResource("/recursos/veterinariaLogin.png")));
+        lblImg.setBounds(252, 0, 170, 194);
+        contentPane.add(lblImg);
+        
+        JLabel lblLogin = new JLabel("Login");
+        lblLogin.setFont(new Font("Times New Roman", Font.BOLD, 18));
+        lblLogin.setBounds(92, 10, 62, 25);
+        contentPane.add(lblLogin);
 
         btnIngresar.addActionListener(e -> {
 
