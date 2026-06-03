@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
 
 public class menu extends JFrame {
 
@@ -38,26 +40,26 @@ public class menu extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		 JButton btnMascotas = new JButton("Registar");
-		 btnMascotas.setBounds(10, 10, 73, 23);
-	        JButton btnPropietarios = new JButton("Historial");
-	        btnPropietarios.setBounds(93, 10, 71, 23);
-	        JButton btnCitas = new JButton("Citas");
-	        btnCitas.setBounds(174, 10, 57, 23);
-	        JButton btnReportes = new JButton("Actualizar Vacunas");
-	        btnReportes.setBounds(324, 10, 123, 23);
-	        JButton btnSalir = new JButton("Agendar");
-	        btnSalir.setBounds(235, 10, 73, 23);
 	        contentPane.setLayout(null);
-
-	        contentPane.add(btnMascotas);
-	        contentPane.add(btnPropietarios);
-	        contentPane.add(btnCitas);
-	        contentPane.add(btnReportes);
-	        contentPane.add(btnSalir);
-
-	        btnSalir.addActionListener(e -> System.exit(0));
+	        
+	        JMenuBar menuBar = new JMenuBar();
+	        menuBar.setBounds(22, 23, 442, 58);
+	        contentPane.add(menuBar);
+	        
+	        JMenu mn_agen = new JMenu("Agendar");
+	        menuBar.add(mn_agen);
+	        
+	        JMenu mn_cita = new JMenu("Citas");
+	        menuBar.add(mn_cita);
+	        
+	        JMenu mn_history = new JMenu("Historial");
+	        menuBar.add(mn_history);
+	        
+	        JMenu mn_vacunas = new JMenu("Actualizar Vacunas");
+	        menuBar.add(mn_vacunas);
+	        
+	        JMenu mn_revisar = new JMenu("Revisar Anteriores Atenciones");
+	        menuBar.add(mn_revisar);
 
 	}
-
 }
