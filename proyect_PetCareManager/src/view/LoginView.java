@@ -76,12 +76,12 @@ public class LoginView extends JFrame {
 
         JButton btnIngresar = new JButton("Ingresar");
         btnIngresar.setFont(new Font("Times New Roman", Font.BOLD, 15));
-        btnIngresar.setBackground(new Color(0, 128, 0));
+        btnIngresar.setBackground(new Color(255, 228, 225));
         btnIngresar.setBounds(83, 141, 120, 30);
         contentPane.add(btnIngresar);
         
         JLabel lblImg = new JLabel("");
-        lblImg.setIcon(new ImageIcon(LoginView.class.getResource("/recursos/veterinaria (2).png")));
+        lblImg.setIcon(new ImageIcon(LoginView.class.getResource("/recursos/veterinariaLogin.png")));
         lblImg.setBounds(252, 0, 170, 194);
         contentPane.add(lblImg);
         

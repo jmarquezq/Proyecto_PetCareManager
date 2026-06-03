@@ -16,6 +16,8 @@ import javax.swing.table.DefaultTableModel;
 
 import controller.MascotaController;
 import model.Mascota;
+import javax.swing.JRadioButton;
+import javax.swing.JComboBox;
 
 public class ViewMascota extends JFrame {
 
@@ -23,17 +25,17 @@ public class ViewMascota extends JFrame {
     private JPanel contentPane;
     private JTextField txtNombre;
     private JTextField txtEdad;
-    private JTextField txtEspecie;
     private JTable tablaMascotas;
     private DefaultTableModel modeloTabla;
     private MascotaController controller;
+    private JTextField textField;
 
     public ViewMascota() {
         controller = new MascotaController();
 
         setTitle("Registro de Mascotas - PetCare");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 600, 450);
+        setBounds(100, 100, 556, 394);
 
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -41,46 +43,42 @@ public class ViewMascota extends JFrame {
         setContentPane(contentPane);
 
         // TÍTULO
-        JLabel lblTitulo = new JLabel("ADMINISTRACIÓN DE MASCOTAS");
+        JLabel lblTitulo = new JLabel("Registro de mascotas");
         lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 14));
         lblTitulo.setBounds(180, 15, 250, 25);
         contentPane.add(lblTitulo);
 
         // FORMULARIO: NOMBRE
         JLabel lblNombre = new JLabel("Nombre:");
-        lblNombre.setBounds(40, 60, 80, 25);
+        lblNombre.setBounds(10, 96, 80, 25);
         contentPane.add(lblNombre);
 
         txtNombre = new JTextField();
-        txtNombre.setBounds(120, 60, 150, 25);
+        txtNombre.setBounds(120, 96, 133, 25);
         contentPane.add(txtNombre);
 
         // FORMULARIO: EDAD
         JLabel lblEdad = new JLabel("Edad:");
-        lblEdad.setBounds(40, 100, 80, 25);
+        lblEdad.setBounds(10, 193, 80, 25);
         contentPane.add(lblEdad);
 
         txtEdad = new JTextField();
-        txtEdad.setBounds(120, 100, 150, 25);
+        txtEdad.setBounds(120, 193, 133, 25);
         contentPane.add(txtEdad);
 
         // FORMULARIO: ESPECIE
         JLabel lblEspecie = new JLabel("Especie:");
-        lblEspecie.setBounds(40, 140, 80, 25);
+        lblEspecie.setBounds(10, 123, 80, 25);
         contentPane.add(lblEspecie);
-
-        txtEspecie = new JTextField();
-        txtEspecie.setBounds(120, 140, 150, 25);
-        contentPane.add(txtEspecie);
 
         // BOTÓN REGISTRAR / GUARDAR
         JButton btnGuardar = new JButton("Registrar");
-        btnGuardar.setBounds(120, 190, 150, 30);
+        btnGuardar.setBounds(10, 269, 80, 20);
         contentPane.add(btnGuardar);
 
         // TABLA PARA MOSTRAR LOS DATOS
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(300, 60, 260, 300);
+        scrollPane.setBounds(279, 95, 260, 247);
         contentPane.add(scrollPane);
 
         tablaMascotas = new JTable();
@@ -90,6 +88,51 @@ public class ViewMascota extends JFrame {
         );
         tablaMascotas.setModel(modeloTabla);
         scrollPane.setViewportView(tablaMascotas);
+        
+        JLabel lblNewLabel = new JLabel("Datos de la mascota:");
+        lblNewLabel.setBounds(49, 67, 112, 19);
+        contentPane.add(lblNewLabel);
+        
+        JLabel lblNewLabel_1 = new JLabel("Raza:");
+        lblNewLabel_1.setBounds(10, 164, 44, 12);
+        contentPane.add(lblNewLabel_1);
+        
+        JLabel lblNewLabel_2 = new JLabel("Genero:");
+        lblNewLabel_2.setBounds(10, 228, 44, 12);
+        contentPane.add(lblNewLabel_2);
+        
+        textField = new JTextField();
+        textField.setBounds(120, 166, 133, 18);
+        contentPane.add(textField);
+        textField.setColumns(10);
+        
+        JRadioButton rdbtnNewRadioButton = new JRadioButton("Macho\r\n");
+        rdbtnNewRadioButton.setBounds(120, 224, 55, 20);
+        contentPane.add(rdbtnNewRadioButton);
+        
+        JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("Hembra");
+        rdbtnNewRadioButton_1.setBounds(180, 224, 102, 20);
+        contentPane.add(rdbtnNewRadioButton_1);
+        
+        JComboBox comboBox = new JComboBox();
+        comboBox.setBounds(120, 128, 133, 20);
+        contentPane.add(comboBox);
+        
+        JButton btnNewButton = new JButton("Modificar");
+        btnNewButton.setBounds(91, 269, 84, 20);
+        contentPane.add(btnNewButton);
+        
+        JButton btnNewButton_1 = new JButton("Eliminar");
+        btnNewButton_1.setBounds(185, 269, 84, 20);
+        contentPane.add(btnNewButton_1);
+        
+        JButton btnNewButton_2 = new JButton("Limpiar");
+        btnNewButton_2.setBounds(91, 312, 84, 20);
+        contentPane.add(btnNewButton_2);
+        
+        JLabel lblNewLabel_3 = new JLabel("Mascotas registradas");
+        lblNewLabel_3.setBounds(279, 67, 117, 19);
+        contentPane.add(lblNewLabel_3);
 
         // ACCIÓN DEL BOTÓN GUARDAR
         btnGuardar.addActionListener(e -> {
