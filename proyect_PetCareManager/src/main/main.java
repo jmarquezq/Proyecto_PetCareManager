@@ -1,11 +1,11 @@
 package main;
 
-import view.ViewLogin;
+import view.LoginView;
 
 public class main {
 
     public static void main(String[] args) {
-        ViewLogin login = new ViewLogin();
+        LoginView login = new LoginView();
         login.setVisible(true);
     }
 }
