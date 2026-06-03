@@ -45,9 +45,9 @@ public class menu extends JFrame {
 	        JButton btnCitas = new JButton("Citas");
 	        btnCitas.setBounds(174, 10, 57, 23);
 	        JButton btnReportes = new JButton("Actualizar Vacunas");
-	        btnReportes.setBounds(241, 10, 123, 23);
+	        btnReportes.setBounds(324, 10, 123, 23);
 	        JButton btnSalir = new JButton("Agendar");
-	        btnSalir.setBounds(374, 10, 73, 23);
+	        btnSalir.setBounds(235, 10, 73, 23);
 	        contentPane.setLayout(null);
 	        
 	        JLabel lblNewLabel = new JLabel("New label");
