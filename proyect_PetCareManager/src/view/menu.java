@@ -49,10 +49,6 @@ public class menu extends JFrame {
 	        JButton btnSalir = new JButton("Agendar");
 	        btnSalir.setBounds(235, 10, 73, 23);
 	        contentPane.setLayout(null);
-	        
-	        JLabel lblNewLabel = new JLabel("New label");
-	        lblNewLabel.setBounds(23, 76, 424, 125);
-	        contentPane.add(lblNewLabel);
 
 	        contentPane.add(btnMascotas);
 	        contentPane.add(btnPropietarios);
