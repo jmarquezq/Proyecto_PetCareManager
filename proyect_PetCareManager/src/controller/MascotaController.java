@@ -3,37 +3,33 @@ package controller;
 import util.GenericDAO;
 import model.Mascota;
 import java.io.IOException;
-import java.util.List;
+import java.util.regex.Pattern;
 
 public class MascotaController {
-    private GenericDAO<Mascota> dao = new GenericDAO<>("src/doc/mascota.txt");
+    private GenericDAO<Mascota> dao = new GenericDAO<>("src/datos/mascota.txt");
 
-    public void registrarMascota(String nombre, String edad, String especie) {
-        Mascota nueva = new Mascota(nombre, edad, especie);
+    // EXPRESIONES REGULARES
+    // Letras y números, de 3 a 10 caracteres (ej. M001)
+    private static final String REGEX_ID = "^[A-Za-z0-9-]{3,10}$";
+    // Solo letras (para nombre, especie y raza)
+    private static final String REGEX_TEXTO_LETRAS = "^[A-Za-zñÑáéíóúÁÉÍÓÚ\\s]{2,50}$";
+    // Solo números, de 1 a 2 dígitos (ej. 5 o 12)
+    private static final String REGEX_EDAD = "^\\d{1,2}$";
+
+    public String validarFormatos(String id, String nombre, String especie, String raza, String edad) {
+        if (!Pattern.matches(REGEX_ID, id)) return "El ID debe ser alfanumérico y tener entre 3 y 10 caracteres (ej. M001).";
+        if (!Pattern.matches(REGEX_TEXTO_LETRAS, nombre)) return "El nombre de la mascota solo debe contener letras.";
+        if (!Pattern.matches(REGEX_TEXTO_LETRAS, especie)) return "La especie solo debe contener letras (ej. Perro, Gato).";
+        if (!Pattern.matches(REGEX_TEXTO_LETRAS, raza)) return "La raza solo debe contener letras.";
+        if (!Pattern.matches(REGEX_EDAD, edad)) return "La edad debe ser un número válido (máximo 2 dígitos).";
+        return "OK";
+    }
+
+    public boolean registrarMascota(String id, String nombre, String especie, String raza, String edad, String sexo, String prop) {
+        Mascota nueva = new Mascota(id, nombre, especie, raza, edad, sexo, prop);
         try {
             dao.guardar(nueva.info()); 
-            System.out.println("¡Mascota guardada con éxito!");
-        } catch (IOException e) {
-            System.err.println("Error: " + e.getMessage());
-        }
-    }
-    public Mascota buscarMascota(String nombreBuscado) {
-        try {
-            List<String[]> todas = dao.cargarTodo();
-            for (String[] datos : todas) {
-                if (datos[0].equals(nombreBuscado.trim())) {
-                    return new Mascota(datos);
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Error: " + e.getMessage());
-        }
-        return null; 
-    }
-
-    public boolean eliminarMascota(String nombreEliminar) {
-        try {
-            return dao.eliminarPorID(nombreEliminar, 0);
+            return true;
         } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
             return false;

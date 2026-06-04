@@ -1,7 +1,6 @@
 package view;
 
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -10,7 +9,6 @@ import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
-
 import controller.LoginController;
 import java.awt.SystemColor;
 import java.awt.Color;
@@ -24,9 +22,6 @@ public class LoginView extends JFrame {
     private JTextField txtUsuario;
     private JPasswordField txtClave;
 
-    /**
-     * Launch the application.
-     */
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -40,18 +35,13 @@ public class LoginView extends JFrame {
         });
     }
 
-    /**
-     * Create the frame.
-     */
     public LoginView() {
-
         setTitle("Inicio de Sesión");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 429, 240);
 
         contentPane = new JPanel();
         contentPane.setBackground(SystemColor.inactiveCaption);
-        contentPane.setForeground(SystemColor.window);
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(null);
         setContentPane(contentPane);
@@ -80,6 +70,7 @@ public class LoginView extends JFrame {
         btnIngresar.setBounds(83, 141, 120, 30);
         contentPane.add(btnIngresar);
         
+        // Imagen (Asegúrate de que la ruta "/recursos/veterinariaLogin.png" exista en tu proyecto)
         JLabel lblImg = new JLabel("");
         lblImg.setIcon(new ImageIcon(LoginView.class.getResource("/recursos/veterinariaLogin.png")));
         lblImg.setBounds(252, 0, 170, 194);
@@ -91,27 +82,28 @@ public class LoginView extends JFrame {
         contentPane.add(lblLogin);
 
         btnIngresar.addActionListener(e -> {
-
             String usuario = txtUsuario.getText();
             String clave = String.valueOf(txtClave.getPassword());
-
             LoginController controller = new LoginController();
 
+            // 1. VALIDACIÓN POR EXPRESIONES REGULARES
+            if (!controller.validarFormato(usuario, clave)) {
+                JOptionPane.showMessageDialog(this, 
+                    "Formato no válido.\n- Usuario: 4-15 caracteres alfanuméricos.\n- Clave: Mínimo 6 caracteres sin espacios.", 
+                    "Error de Seguridad", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // 2. VALIDACIÓN DE CREDENCIALES EN EL ARCHIVO TXT
             if (controller.validarLogin(usuario, clave)) {
-
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Bienvenido al sistema");
-
-//                new ViewMascotas().setVisible(true);
-
-                dispose();
-
+                JOptionPane.showMessageDialog(this, "Bienvenido al sistema PetCare.");
+                
+                // Redirigir al menú principal
+                new menu().setVisible(true);
+                dispose(); // Cierra la ventana de login
             } else {
-
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Usuario o contraseña incorrectos");
+                JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos.", 
+                    "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
             }
         });
 
