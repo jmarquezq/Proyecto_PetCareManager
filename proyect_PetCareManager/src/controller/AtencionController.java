@@ -1,13 +1,13 @@
 package controller;
 
-import util.GenericDAO;
+import Libreria_generica.GenericDAO;
 import model.Atencion;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
 public class AtencionController {
 
-    private GenericDAO<Atencion> dao = new GenericDAO<>("src/datos/atenciones.txt");
+    private GenericDAO<Atencion> dao = new GenericDAO<>("src/doc/atenciones.txt");
 
     // EXPRESIONES REGULARES
     // Peso: 1 a 3 dígitos, opcionalmente seguidos de un punto y 1 o 2 decimales (ej. 15.5 o 5)

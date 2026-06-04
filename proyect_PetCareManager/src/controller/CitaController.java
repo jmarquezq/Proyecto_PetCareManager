@@ -1,13 +1,13 @@
 package controller;
 
-import util.GenericDAO;
+import Libreria_generica.GenericDAO;
 import model.Cita;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
 public class CitaController {
     
-    private GenericDAO<Cita> dao = new GenericDAO<>("src/datos/citas.txt");
+    private GenericDAO<Cita> dao = new GenericDAO<>("src/doc/citas.txt");
     private static final String REGEX_FECHA = "^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/\\d{4}$";
     private static final String REGEX_HORA = "^([01]\\d|2[0-3]):([0-5]\\d)$";
 

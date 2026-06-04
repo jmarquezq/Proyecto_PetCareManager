@@ -149,7 +149,7 @@ public class ViewMascota extends JFrame {
     // Método clave que lee el archivo de propietarios y llena la lista desplegable
     private void cargarPropietarios() {
         try {
-            List<String[]> propietarios = new util.GenericDAO<Propietario>("src/doc/propietarios.txt").cargarTodo();
+            List<String[]> propietarios = new Libreria_generica.GenericDAO<Propietario>("src/doc/propietarios.txt").cargarTodo();
             if (propietarios != null && !propietarios.isEmpty()) {
                 for (String[] prop : propietarios) {
                     if (prop.length >= 2) {
@@ -167,7 +167,7 @@ public class ViewMascota extends JFrame {
     private void llenarTabla() {
         modeloTabla.setRowCount(0); 
         try {
-            List<String[]> lista = new util.GenericDAO<Mascota>("src/doc/mascota.txt").cargarTodo();
+            List<String[]> lista = new Libreria_generica.GenericDAO<Mascota>("src/doc/mascota.txt").cargarTodo();
             if (lista != null) {
                 for (String[] registro : lista) {
                     if(registro.length == 7) modeloTabla.addRow(registro);

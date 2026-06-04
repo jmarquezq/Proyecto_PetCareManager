@@ -1,13 +1,13 @@
 package controller;
 
-import util.GenericDAO;
+import Libreria_generica.GenericDAO;
 import model.Vacuna;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
 public class VacunaController {
 
-    private GenericDAO<Vacuna> dao = new GenericDAO<>("src/datos/vacunas.txt");
+    private GenericDAO<Vacuna> dao = new GenericDAO<>("src/doc/vacunas.txt");
 
     // EXPRESIONES REGULARES
     // Fecha: DD/MM/AAAA

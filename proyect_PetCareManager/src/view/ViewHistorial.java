@@ -111,7 +111,7 @@ public class ViewHistorial extends JFrame {
         
         // 1. Buscar los datos de la mascota
         try {
-            List<String[]> mascotas = new util.GenericDAO<Mascota>("src/doc/mascota.txt").cargarTodo();
+            List<String[]> mascotas = new Libreria_generica.GenericDAO<Mascota>("src/doc/mascota.txt").cargarTodo();
             for (String[] m : mascotas) {
                 if (m[0].equalsIgnoreCase(termino) || m[1].equalsIgnoreCase(termino)) {
                     idMascotaEncontrada = m[0];
@@ -143,7 +143,7 @@ public class ViewHistorial extends JFrame {
         
         boolean tieneCitas = false;
         try {
-            List<String[]> citas = new util.GenericDAO<Cita>("src/doc/citas.txt").cargarTodo();
+            List<String[]> citas = new Libreria_generica.GenericDAO<Cita>("src/doc/citas.txt").cargarTodo();
             for (String[] c : citas) {
                 // c[1] es el idMascota en el archivo de citas
                 if (c.length == 5 && c[1].equals(idMascotaEncontrada)) {

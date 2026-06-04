@@ -3,7 +3,7 @@ package controller;
 import java.util.List;
 import java.util.regex.Pattern;
 import model.Usuario;
-import util.GenericDAO;
+import Libreria_generica.GenericDAO;
 
 public class LoginController {
 

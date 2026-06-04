@@ -93,7 +93,7 @@ public class ViewAtencionesRealizadas extends JFrame {
         
         // 1. Buscar los datos principales de la mascota
         try {
-            List<String[]> mascotas = new util.GenericDAO<Mascota>("src/doc/mascota.txt").cargarTodo();
+            List<String[]> mascotas = new Libreria_generica.GenericDAO<Mascota>("src/doc/mascota.txt").cargarTodo();
             for (String[] m : mascotas) {
                 if (m[0].equalsIgnoreCase(termino) || m[1].equalsIgnoreCase(termino)) {
                     idMascotaEncontrada = m[0];
@@ -128,7 +128,7 @@ public class ViewAtencionesRealizadas extends JFrame {
         boolean tieneAtenciones = false;
 
         try {
-            List<String[]> atenciones = new util.GenericDAO<Atencion>("src/doc/atenciones.txt").cargarTodo();
+            List<String[]> atenciones = new Libreria_generica.GenericDAO<Atencion>("src/doc/atenciones.txt").cargarTodo();
             for (String[] a : atenciones) {
                 // a[2] corresponde a idMascota según el modelo Atencion.java
                 if (a.length == 9 && a[2].equalsIgnoreCase(idMascotaEncontrada)) {

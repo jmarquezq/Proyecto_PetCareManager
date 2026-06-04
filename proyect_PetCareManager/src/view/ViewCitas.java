@@ -154,7 +154,7 @@ public class ViewCitas extends JFrame {
             
             boolean encontrada = false;
             try {
-                List<String[]> mascotas = new util.GenericDAO<Mascota>("src/doc/mascota.txt").cargarTodo();
+                List<String[]> mascotas = new Libreria_generica.GenericDAO<Mascota>("src/doc/mascota.txt").cargarTodo();
                 for (String[] m : mascotas) {
                     // m[0] es ID, m[1] es Nombre, m[6] es Propietario
                     if (m[0].equalsIgnoreCase(termino) || m[1].equalsIgnoreCase(termino)) {
@@ -231,7 +231,7 @@ public class ViewCitas extends JFrame {
     private void llenarTabla() {
         modeloTabla.setRowCount(0);
         try {
-            List<String[]> lista = new util.GenericDAO<Cita>("src/doc/citas.txt").cargarTodo();
+            List<String[]> lista = new Libreria_generica.GenericDAO<Cita>("src/doc/citas.txt").cargarTodo();
             if (lista != null) {
                 for (String[] r : lista) {
                     if (r.length == 5) modeloTabla.addRow(r);

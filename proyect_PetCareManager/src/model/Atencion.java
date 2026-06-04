@@ -1,7 +1,7 @@
 package model;
+import Libreria_generica.Entidad;
 
-public class Atencion {
-    private String idAtencion;
+public class Atencion extends Entidad<String> {
     private String idCita;
     private String idMascota;
     private String fecha;
@@ -14,7 +14,7 @@ public class Atencion {
     public Atencion() {}
 
     public Atencion(String idAtencion, String idCita, String idMascota, String fecha, String peso, String temperatura, String diagnostico, String tratamiento, String observacion) {
-        this.idAtencion = idAtencion;
+        this.setId(idAtencion);
         this.idCita = idCita;
         this.idMascota = idMascota;
         this.fecha = fecha;
@@ -26,7 +26,7 @@ public class Atencion {
     }
 
     public Atencion(String[] datos) {
-        this.idAtencion = datos[0];
+        this.setId(datos[0]);
         this.idCita = datos[1];
         this.idMascota = datos[2];
         this.fecha = datos[3];
@@ -37,7 +37,8 @@ public class Atencion {
         this.observacion = datos[8];
     }
 
+    @Override
     public String info() {
-        return idAtencion + "," + idCita + "," + idMascota + "," + fecha + "," + peso + "," + temperatura + "," + diagnostico + "," + tratamiento + "," + observacion;
+        return getId() + "," + idCita + "," + idMascota + "," + fecha + "," + peso + "," + temperatura + "," + diagnostico + "," + tratamiento + "," + observacion;
     }
 }

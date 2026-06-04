@@ -148,7 +148,7 @@ public class ViewAtenciones extends JFrame {
             boolean citaEncontrada = false;
             try {
                 // Leer archivo de citas
-                List<String[]> citas = new util.GenericDAO<Cita>("src/doc/citas.txt").cargarTodo();
+                List<String[]> citas = new Libreria_generica.GenericDAO<Cita>("src/doc/citas.txt").cargarTodo();
                 for (String[] c : citas) {
                     if (c[0].equals(terminoCita)) {
                         idCitaCargada = c[0];
@@ -161,7 +161,7 @@ public class ViewAtenciones extends JFrame {
 
                 // Si encuentra la cita, buscar el nombre de la mascota para mostrarlo
                 if (citaEncontrada) {
-                    List<String[]> mascotas = new util.GenericDAO<Mascota>("src/doc/mascota.txt").cargarTodo();
+                    List<String[]> mascotas = new Libreria_generica.GenericDAO<Mascota>("src/doc/mascota.txt").cargarTodo();
                     for (String[] m : mascotas) {
                         if (m[0].equals(idMascotaCargada)) {
                             txtMascotaNombre.setText(m[1]); // Mostramos el nombre de la mascota

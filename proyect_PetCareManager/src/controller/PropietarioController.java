@@ -1,12 +1,12 @@
 package controller;
 
-import util.GenericDAO;
+import Libreria_generica.GenericDAO;
 import model.Propietario;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
 public class PropietarioController {
-    private GenericDAO<Propietario> dao = new GenericDAO<>("src/datos/propietarios.txt");
+    private GenericDAO<Propietario> dao = new GenericDAO<>("src/doc/propietarios.txt");
 
     // EXPRESIONES REGULARES
     private static final String REGEX_CEDULA = "^\\d{10}$";

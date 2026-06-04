@@ -1,7 +1,7 @@
 package model;
+import Libreria_generica.Entidad;
 
-public class Mascota {
-    private String idMascota;
+public class Mascota extends Entidad<String> {
     private String nombre;
     private String especie;
     private String raza;
@@ -12,7 +12,7 @@ public class Mascota {
     public Mascota() {}
 
     public Mascota(String idMascota, String nombre, String especie, String raza, String edad, String sexo, String propietario) {
-        this.idMascota = idMascota;
+        this.setId(idMascota);
         this.nombre = nombre;
         this.especie = especie;
         this.raza = raza;
@@ -22,7 +22,7 @@ public class Mascota {
     }
 
     public Mascota(String[] datos) {
-        this.idMascota = datos[0];
+        this.setId(datos[0]);
         this.nombre = datos[1];
         this.especie = datos[2];
         this.raza = datos[3];
@@ -31,7 +31,8 @@ public class Mascota {
         this.propietario = datos[6];
     }
 
+    @Override
     public String info() {
-        return idMascota + "," + nombre + "," + especie + "," + raza + "," + edad + "," + sexo + "," + propietario;
+        return getId() + "," + nombre + "," + especie + "," + raza + "," + edad + "," + sexo + "," + propietario;
     }
 }

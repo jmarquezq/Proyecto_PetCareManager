@@ -125,7 +125,7 @@ public class ViewPropietarios extends JFrame {
     private void llenarTabla() {
         modeloTabla.setRowCount(0);
         try {
-            List<String[]> lista = new util.GenericDAO<Propietario>("src/doc/propietarios.txt").cargarTodo();
+            List<String[]> lista = new Libreria_generica.GenericDAO<Propietario>("src/doc/propietarios.txt").cargarTodo();
             if (lista != null) {
                 for (String[] r : lista) if (r.length == 5) modeloTabla.addRow(r);
             }

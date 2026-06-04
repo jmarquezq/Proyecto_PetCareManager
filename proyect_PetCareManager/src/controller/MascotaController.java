@@ -1,12 +1,12 @@
 package controller;
 
-import util.GenericDAO;
+import Libreria_generica.GenericDAO;
 import model.Mascota;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
 public class MascotaController {
-    private GenericDAO<Mascota> dao = new GenericDAO<>("src/datos/mascota.txt");
+    private GenericDAO<Mascota> dao = new GenericDAO<>("src/doc/mascota.txt");
 
     // EXPRESIONES REGULARES
     // Letras y números, de 3 a 10 caracteres (ej. M001)

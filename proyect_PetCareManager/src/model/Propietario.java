@@ -1,7 +1,7 @@
 package model;
+import Libreria_generica.Entidad;
 
-public class Propietario {
-    private String cedula;
+public class Propietario extends Entidad<String> {
     private String nombre;
     private String telefono;
     private String direccion;
@@ -10,7 +10,7 @@ public class Propietario {
     public Propietario() {}
 
     public Propietario(String cedula, String nombre, String telefono, String direccion, String correo) {
-        this.cedula = cedula;
+        this.setId(cedula); // La cédula es el ID
         this.nombre = nombre;
         this.telefono = telefono;
         this.direccion = direccion;
@@ -18,14 +18,15 @@ public class Propietario {
     }
 
     public Propietario(String[] datos) {
-        this.cedula = datos[0];
+        this.setId(datos[0]);
         this.nombre = datos[1];
         this.telefono = datos[2];
         this.direccion = datos[3];
         this.correo = datos[4];
     }
 
+    @Override
     public String info() {
-        return cedula + "," + nombre + "," + telefono + "," + direccion + "," + correo;
+        return getId() + "," + nombre + "," + telefono + "," + direccion + "," + correo;
     }
 }

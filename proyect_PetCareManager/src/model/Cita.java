@@ -1,8 +1,8 @@
 package model;
+import Libreria_generica.Entidad;
 
-public class Cita {
-    private String idCita;
-    private String idMascota; // Cambio clave: Solo guardamos el ID
+public class Cita extends Entidad<String> {
+    private String idMascota;
     private String fecha;
     private String hora;
     private String motivo;
@@ -10,7 +10,7 @@ public class Cita {
     public Cita() {}
 
     public Cita(String idCita, String idMascota, String fecha, String hora, String motivo) {
-        this.idCita = idCita;
+        this.setId(idCita);
         this.idMascota = idMascota;
         this.fecha = fecha;
         this.hora = hora;
@@ -18,20 +18,15 @@ public class Cita {
     }
 
     public Cita(String[] datos) {
-        this.idCita = datos[0];
+        this.setId(datos[0]);
         this.idMascota = datos[1];
         this.fecha = datos[2];
         this.hora = datos[3];
         this.motivo = datos[4];
     }
 
-    public String getIdCita() { return idCita; }
-    public String getIdMascota() { return idMascota; }
-    public String getFecha() { return fecha; }
-    public String getHora() { return hora; }
-    public String getMotivo() { return motivo; }
-
+    @Override
     public String info() {
-        return idCita + "," + idMascota + "," + fecha + "," + hora + "," + motivo;
+        return getId() + "," + idMascota + "," + fecha + "," + hora + "," + motivo;
     }
 }

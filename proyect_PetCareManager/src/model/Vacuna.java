@@ -1,7 +1,7 @@
 package model;
+import Libreria_generica.Entidad;
 
-public class Vacuna {
-    private String idVacuna;
+public class Vacuna extends Entidad<String> {
     private String idMascota;
     private String nombreVacuna;
     private String fechaAplicacion;
@@ -10,7 +10,7 @@ public class Vacuna {
     public Vacuna() {}
 
     public Vacuna(String idVacuna, String idMascota, String nombreVacuna, String fechaAplicacion, String observacion) {
-        this.idVacuna = idVacuna;
+        this.setId(idVacuna);
         this.idMascota = idMascota;
         this.nombreVacuna = nombreVacuna;
         this.fechaAplicacion = fechaAplicacion;
@@ -18,20 +18,15 @@ public class Vacuna {
     }
 
     public Vacuna(String[] datos) {
-        this.idVacuna = datos[0];
+        this.setId(datos[0]);
         this.idMascota = datos[1];
         this.nombreVacuna = datos[2];
         this.fechaAplicacion = datos[3];
         this.observacion = datos[4];
     }
 
-    public String getIdVacuna() { return idVacuna; }
-    public String getIdMascota() { return idMascota; }
-    public String getNombreVacuna() { return nombreVacuna; }
-    public String getFechaAplicacion() { return fechaAplicacion; }
-    public String getObservacion() { return observacion; }
-
+    @Override
     public String info() {
-        return idVacuna + "," + idMascota + "," + nombreVacuna + "," + fechaAplicacion + "," + observacion;
+        return getId() + "," + idMascota + "," + nombreVacuna + "," + fechaAplicacion + "," + observacion;
     }
 }

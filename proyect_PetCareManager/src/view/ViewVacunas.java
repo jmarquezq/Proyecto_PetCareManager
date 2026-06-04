@@ -149,7 +149,7 @@ public class ViewVacunas extends JFrame {
 
             boolean encontrada = false;
             try {
-                List<String[]> mascotas = new util.GenericDAO<Mascota>("src/doc/mascota.txt").cargarTodo();
+                List<String[]> mascotas = new Libreria_generica.GenericDAO<Mascota>("src/doc/mascota.txt").cargarTodo();
                 for (String[] m : mascotas) {
                     if (m[0].equalsIgnoreCase(termino) || m[1].equalsIgnoreCase(termino)) {
                         idMascotaSeleccionada = m[0];
@@ -218,7 +218,7 @@ public class ViewVacunas extends JFrame {
         if (idMascotaSeleccionada.isEmpty()) return;
 
         try {
-            List<String[]> vacunas = new util.GenericDAO<Vacuna>("src/doc/vacunas.txt").cargarTodo();
+            List<String[]> vacunas = new Libreria_generica.GenericDAO<Vacuna>("src/doc/vacunas.txt").cargarTodo();
             if (vacunas != null) {
                 for (String[] v : vacunas) {
                     // v[1] es idMascota en el modelo Vacuna.java
