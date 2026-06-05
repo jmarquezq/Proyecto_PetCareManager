@@ -70,7 +70,6 @@ public class LoginView extends JFrame {
         btnIngresar.setBounds(83, 141, 120, 30);
         contentPane.add(btnIngresar);
         
-        // Imagen (Asegúrate de que la ruta "/recursos/veterinariaLogin.png" exista en tu proyecto)
         JLabel lblImg = new JLabel("");
         lblImg.setIcon(new ImageIcon(LoginView.class.getResource("/recursos/veterinariaLogin.png")));
         lblImg.setBounds(252, 0, 170, 194);
@@ -86,25 +85,19 @@ public class LoginView extends JFrame {
             String clave = String.valueOf(txtClave.getPassword());
             LoginController controller = new LoginController();
 
-            // 1. VALIDACIÓN POR EXPRESIONES REGULARES
-            if (!controller.validarFormato(usuario, clave)) {
-                JOptionPane.showMessageDialog(this, 
-                    "Formato no válido.\n- Usuario: 4-15 caracteres alfanuméricos.\n- Clave: Mínimo 6 caracteres sin espacios.", 
-                    "Error de Seguridad", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            // 2. VALIDACIÓN DE CREDENCIALES EN EL ARCHIVO TXT
-            if (controller.validarLogin(usuario, clave)) {
-                JOptionPane.showMessageDialog(this, "Bienvenido al sistema PetCare.");
+            if (controller.validarFormato(usuario, clave)) {
                 
-                // Redirigir al menú principal
-                new menu().setVisible(true);
-                dispose(); // Cierra la ventana de login
-            } else {
-                JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos.", 
-                    "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
+                if (controller.validarLogin(usuario, clave)) {
+                    JOptionPane.showMessageDialog(this, "Bienvenido al sistema PetCare.");
+                    new menu().setVisible(true);
+                    dispose(); 
+                    return; 
+                }
             }
+            JOptionPane.showMessageDialog(this, 
+                "Usuario o contraseña incorrectos.", 
+                "Acceso Denegado", 
+                JOptionPane.ERROR_MESSAGE);
         });
 
         setLocationRelativeTo(null);

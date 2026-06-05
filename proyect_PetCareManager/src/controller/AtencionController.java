@@ -1,6 +1,6 @@
 package controller;
 
-import Libreria_generica.GenericDAO;
+import util.GenericDAO; 
 import model.Atencion;
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -9,12 +9,8 @@ public class AtencionController {
 
     private GenericDAO<Atencion> dao = new GenericDAO<>("src/doc/atenciones.txt");
 
-    // EXPRESIONES REGULARES
-    // Peso: 1 a 3 dígitos, opcionalmente seguidos de un punto y 1 o 2 decimales (ej. 15.5 o 5)
     private static final String REGEX_PESO = "^\\d{1,3}(\\.\\d{1,2})?$";
-    // Temperatura: 2 dígitos, opcionalmente un decimal (ej. 38 o 39.5)
     private static final String REGEX_TEMP = "^\\d{2}(\\.\\d{1})?$";
-    // Textos (Diagnóstico, Tratamiento, Observación): Letras, números, espacios y puntuación. Mínimo 5 caracteres.
     private static final String REGEX_TEXTO = "^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\\s.,:;-]{5,200}$";
 
     public String validarFormatos(String peso, String temp, String diag, String trat, String obs) {
@@ -27,11 +23,11 @@ public class AtencionController {
     }
 
     public boolean registrarAtencion(String idCita, String idMascota, String fecha, String peso, String temp, String diag, String trat, String obs) {
-        // Generar un ID secuencial/aleatorio formato ATE-XXXX
+
         int numAleatorio = (int)(Math.random() * 9000) + 1000;
         String idAtencion = "ATE-" + numAleatorio;
 
-        Atencion nueva = new Atencion(idAtencion, idCita, idMascota, fecha, peso, temp, diag, trat, obs);
+        Atencion nueva = new Atencion(idAtencion, idCita, idMascota, fecha, Double.parseDouble(peso), temp, diag, trat, obs);
 
         try {
             dao.guardar(nueva.info());

@@ -1,6 +1,6 @@
 package controller;
 
-import Libreria_generica.GenericDAO;
+import util.GenericDAO; 
 import model.Mascota;
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -8,12 +8,8 @@ import java.util.regex.Pattern;
 public class MascotaController {
     private GenericDAO<Mascota> dao = new GenericDAO<>("src/doc/mascota.txt");
 
-    // EXPRESIONES REGULARES
-    // Letras y números, de 3 a 10 caracteres (ej. M001)
     private static final String REGEX_ID = "^[A-Za-z0-9-]{3,10}$";
-    // Solo letras (para nombre, especie y raza)
     private static final String REGEX_TEXTO_LETRAS = "^[A-Za-zñÑáéíóúÁÉÍÓÚ\\s]{2,50}$";
-    // Solo números, de 1 a 2 dígitos (ej. 5 o 12)
     private static final String REGEX_EDAD = "^\\d{1,2}$";
 
     public String validarFormatos(String id, String nombre, String especie, String raza, String edad) {
@@ -31,7 +27,7 @@ public class MascotaController {
             dao.guardar(nueva.info()); 
             return true;
         } catch (IOException e) {
-            System.err.println("Error: " + e.getMessage());
+            System.err.println("Error al guardar la mascota: " + e.getMessage());
             return false;
         }
     }

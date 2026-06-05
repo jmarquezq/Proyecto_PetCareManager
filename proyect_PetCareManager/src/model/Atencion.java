@@ -1,21 +1,23 @@
 package model;
-import Libreria_generica.Entidad;
 
-public class Atencion extends Entidad<String> {
-    private String idCita;
+import Libreria_generica.generic;
+
+public class Atencion {
+    private generic dt_a;
     private String idMascota;
-    private String fecha;
-    private String peso;
-    private String temperatura;
+    private String fecha;        
+    private double peso;        
+    private String temperatura;  
     private String diagnostico;
     private String tratamiento;
     private String observacion;
 
-    public Atencion() {}
+    public Atencion() {
+        this.dt_a = new generic();
+    }
 
-    public Atencion(String idAtencion, String idCita, String idMascota, String fecha, String peso, String temperatura, String diagnostico, String tratamiento, String observacion) {
-        this.setId(idAtencion);
-        this.idCita = idCita;
+    public Atencion(String idAtencion, String idCita, String idMascota, String fecha, double peso, String temperatura, String diagnostico, String tratamiento, String observacion) {
+        this.dt_a = new generic(idAtencion, idCita);
         this.idMascota = idMascota;
         this.fecha = fecha;
         this.peso = peso;
@@ -26,19 +28,49 @@ public class Atencion extends Entidad<String> {
     }
 
     public Atencion(String[] datos) {
-        this.setId(datos[0]);
-        this.idCita = datos[1];
+        this.dt_a = new generic(datos[0], datos[1]);
         this.idMascota = datos[2];
         this.fecha = datos[3];
-        this.peso = datos[4];
+        this.peso = Double.parseDouble(datos[4]); 
         this.temperatura = datos[5];
         this.diagnostico = datos[6];
         this.tratamiento = datos[7];
         this.observacion = datos[8];
     }
+    
+    public String getIdAtencion() {
+        return (String) dt_a.getAttributeT1();
+    }
 
-    @Override
+    public void setIdAtencion(String idAtencion) {
+        dt_a.setAttributeT1(idAtencion);
+    }
+
+    public String getIdCita() {
+        return (String) dt_a.getAttributeT2();
+    }
+
+    public void setIdCita(String idCita) {
+        dt_a.setAttributeT2(idCita);
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+    public double getPeso() { 
+        return peso;
+    }
+
+    public void setPeso(double peso) { 
+        this.peso = peso;
+    }
+
     public String info() {
-        return getId() + "," + idCita + "," + idMascota + "," + fecha + "," + peso + "," + temperatura + "," + diagnostico + "," + tratamiento + "," + observacion;
+        return getIdAtencion() + "," + getIdCita() + "," + idMascota + "," + fecha + "," + peso + "," + temperatura + "," + diagnostico + "," + tratamiento + "," + observacion;
     }
 }

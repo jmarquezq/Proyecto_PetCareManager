@@ -1,1 +1,2 @@
 M01,Peluche,Perro,Mezclado,8,Macho,1727456962 - Rony Cedeño
+M02,Frida,Perro,San Bernardo,1,Hembra,0850595455 - Juli Marquez

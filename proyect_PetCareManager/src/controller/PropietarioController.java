@@ -1,6 +1,6 @@
 package controller;
 
-import Libreria_generica.GenericDAO;
+import util.GenericDAO; 
 import model.Propietario;
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -8,16 +8,12 @@ import java.util.regex.Pattern;
 public class PropietarioController {
     private GenericDAO<Propietario> dao = new GenericDAO<>("src/doc/propietarios.txt");
 
-    // EXPRESIONES REGULARES
     private static final String REGEX_CEDULA = "^\\d{10}$";
     private static final String REGEX_TELEFONO = "^\\d{10}$";
     private static final String REGEX_CORREO = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
-    // Permite letras (incluyendo acentos y ñ), números, espacios, comas, puntos y guiones (de 5 a 100 caracteres)
     private static final String REGEX_DIRECCION = "^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\\s.,#-]{5,100}$";
-    // Solo letras y espacios (de 3 a 50 caracteres)
     private static final String REGEX_NOMBRE = "^[a-zA-ZñÑáéíóúÁÉÍÓÚ\\s]{3,50}$";
 
-    // Método que devuelve un mensaje de error específico si falla la validación, o "OK" si todo es correcto.
     public String validarFormatos(String cedula, String nombre, String telefono, String direccion, String correo) {
         if (!Pattern.matches(REGEX_CEDULA, cedula)) return "La cédula debe tener exactamente 10 números.";
         if (!Pattern.matches(REGEX_NOMBRE, nombre)) return "El nombre solo debe contener letras (mínimo 3 caracteres).";
@@ -28,12 +24,13 @@ public class PropietarioController {
     }
 
     public boolean registrarPropietario(String cedula, String nombre, String telefono, String direccion, String correo) {
+
         Propietario nuevo = new Propietario(cedula, nombre, telefono, direccion, correo);
         try {
             dao.guardar(nuevo.info());
             return true;
         } catch (IOException e) {
-            System.err.println("Error: " + e.getMessage());
+            System.err.println("Error al guardar el propietario: " + e.getMessage());
             return false;
         }
     }
