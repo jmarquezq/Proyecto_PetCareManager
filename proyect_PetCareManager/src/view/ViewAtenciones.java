@@ -2,7 +2,9 @@ package view;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.util.List;
+import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -10,10 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-
 import controller.AtencionController;
-import model.Cita;
-import model.Mascota;
 
 public class ViewAtenciones extends JFrame {
 
@@ -35,6 +34,7 @@ public class ViewAtenciones extends JFrame {
         setBounds(100, 100, 550, 550);
 
         contentPane = new JPanel();
+        contentPane.setBackground(SystemColor.inactiveCaption);
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(null);
         setContentPane(contentPane);
@@ -44,7 +44,6 @@ public class ViewAtenciones extends JFrame {
         lblTitulo.setBounds(180, 15, 250, 25);
         contentPane.add(lblTitulo);
 
-        // ================= PASO 1: BUSCAR CITA =================
         JLabel lblBuscar = new JLabel("ID Cita (Ej. CT-0001):");
         lblBuscar.setBounds(20, 60, 150, 25);
         contentPane.add(lblBuscar);
@@ -54,10 +53,11 @@ public class ViewAtenciones extends JFrame {
         contentPane.add(txtBuscarCita);
 
         JButton btnBuscar = new JButton("Buscar Turno");
+        btnBuscar.setBackground(SystemColor.activeCaption);
+        btnBuscar.setFont(new Font("Tahoma", Font.BOLD, 10));
         btnBuscar.setBounds(290, 60, 120, 25);
         contentPane.add(btnBuscar);
 
-        // ================= DATOS EXTRAÍDOS (SOLO LECTURA) =================
         JLabel lblMascota = new JLabel("Paciente:");
         lblMascota.setBounds(20, 110, 80, 25);
         contentPane.add(lblMascota);
@@ -78,7 +78,6 @@ public class ViewAtenciones extends JFrame {
         txtFecha.setBackground(Color.LIGHT_GRAY);
         contentPane.add(txtFecha);
 
-        // ================= SIGNOS VITALES =================
         JLabel lblSignos = new JLabel("Signos Vitales:");
         lblSignos.setFont(new Font("Tahoma", Font.BOLD, 12));
         lblSignos.setBounds(20, 160, 150, 20);
@@ -100,7 +99,6 @@ public class ViewAtenciones extends JFrame {
         txtTemperatura.setBounds(280, 190, 80, 25);
         contentPane.add(txtTemperatura);
 
-        // ================= DATOS CLÍNICOS =================
         JLabel lblClinicos = new JLabel("Datos Clínicos:");
         lblClinicos.setFont(new Font("Tahoma", Font.BOLD, 12));
         lblClinicos.setBounds(20, 240, 150, 20);
@@ -130,14 +128,19 @@ public class ViewAtenciones extends JFrame {
         txtObservacion.setBounds(100, 350, 380, 25);
         contentPane.add(txtObservacion);
 
-        // ================= BOTÓN DE REGISTRO =================
         JButton btnRegistrar = new JButton("Guardar Atención Médica");
-        btnRegistrar.setBounds(150, 420, 220, 35);
+        btnRegistrar.setBackground(SystemColor.activeCaption);
+        btnRegistrar.setFont(new Font("Tahoma", Font.BOLD, 10));
+        btnRegistrar.setBounds(69, 410, 181, 35);
         contentPane.add(btnRegistrar);
+        JButton btn_Regresar = new JButton("Regresar");
 
-        // ================= EVENTOS =================
-
-        // Buscar Cita
+        btn_Regresar.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+                new menu().setVisible(true);
+                dispose();
+        }
+        });
         btnBuscar.addActionListener(e -> {
             String terminoCita = txtBuscarCita.getText().trim().toUpperCase();
             if (terminoCita.isEmpty()) {
@@ -145,42 +148,21 @@ public class ViewAtenciones extends JFrame {
                 return;
             }
 
-            boolean citaEncontrada = false;
-            try {
-                // Leer archivo de citas
-                List<String[]> citas = new Libreria_generica.GenericDAO<Cita>("src/doc/citas.txt").cargarTodo();
-                for (String[] c : citas) {
-                    if (c[0].equals(terminoCita)) {
-                        idCitaCargada = c[0];
-                        idMascotaCargada = c[1];
-                        txtFecha.setText(c[2]);
-                        citaEncontrada = true;
-                        break;
-                    }
-                }
+            String[] datosCita = controller.buscarDatosCita(terminoCita);
 
-                // Si encuentra la cita, buscar el nombre de la mascota para mostrarlo
-                if (citaEncontrada) {
-                    List<String[]> mascotas = new Libreria_generica.GenericDAO<Mascota>("src/doc/mascota.txt").cargarTodo();
-                    for (String[] m : mascotas) {
-                        if (m[0].equals(idMascotaCargada)) {
-                            txtMascotaNombre.setText(m[1]); // Mostramos el nombre de la mascota
-                            break;
-                        }
-                    }
-                }
+            if (datosCita != null) {
+                idCitaCargada = datosCita[0];
+                idMascotaCargada = datosCita[1];
+                txtFecha.setText(datosCita[2]);
 
-            } catch (Exception ex) {
-                System.err.println("Error de lectura: " + ex.getMessage());
-            }
-
-            if (!citaEncontrada) {
+                String nombrePac = controller.buscarNombreMascota(idMascotaCargada);
+                txtMascotaNombre.setText(nombrePac);
+            } else {
                 JOptionPane.showMessageDialog(this, "No existe un turno agendado con ese ID.", "Error", JOptionPane.ERROR_MESSAGE);
                 limpiarTodo();
             }
         });
 
-        // Registrar Atención
         btnRegistrar.addActionListener(e -> {
             if (idCitaCargada.isEmpty() || idMascotaCargada.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Debe buscar un turno válido primero.");
@@ -194,26 +176,17 @@ public class ViewAtenciones extends JFrame {
             String obs = txtObservacion.getText().trim();
             String fecha = txtFecha.getText();
 
-            // Validar campos vacíos
-            if (peso.isEmpty() || temp.isEmpty() || diag.isEmpty() || trat.isEmpty() || obs.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Todos los campos médicos son obligatorios.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            // Validar Regex
             String validacion = controller.validarFormatos(peso, temp, diag, trat, obs);
             if (!validacion.equals("OK")) {
-                JOptionPane.showMessageDialog(this, validacion, "Error de formato", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, validacion, "Error de Validación", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            // Guardar
             if (controller.registrarAtencion(idCitaCargada, idMascotaCargada, fecha, peso, temp, diag, trat, obs)) {
                 JOptionPane.showMessageDialog(this, "Atención médica guardada con éxito.");
                 limpiarTodo();
             }
         });
-
         setLocationRelativeTo(null);
     }
 

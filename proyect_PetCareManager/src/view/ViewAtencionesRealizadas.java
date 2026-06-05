@@ -2,7 +2,7 @@ package view;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.util.List;
+import java.awt.SystemColor;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -12,8 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import model.Atencion;
-import model.Mascota;
+import controller.AtencionController;
 
 public class ViewAtencionesRealizadas extends JFrame {
 
@@ -22,13 +21,20 @@ public class ViewAtencionesRealizadas extends JFrame {
     private JTextField txtBuscar;
     private JLabel lblNombreMascota, lblEspecie, lblDueno;
     private JTextArea txtAreaAtenciones;
+    private JButton btn_Regresar;
+    
+    private AtencionController controller;
 
     public ViewAtencionesRealizadas() {
+
+        controller = new AtencionController();
+
         setTitle("Atenciones Médicas Realizadas - PetCare");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 500, 550);
 
         contentPane = new JPanel();
+        contentPane.setBackground(SystemColor.inactiveCaption);
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(null);
         setContentPane(contentPane);
@@ -38,7 +44,6 @@ public class ViewAtencionesRealizadas extends JFrame {
         lblTitulo.setBounds(130, 15, 250, 25);
         contentPane.add(lblTitulo);
 
-        // ================= BUSCADOR =================
         JLabel lblBuscar = new JLabel("Buscar Mascota (ID):");
         lblBuscar.setBounds(20, 60, 150, 25);
         contentPane.add(lblBuscar);
@@ -48,10 +53,11 @@ public class ViewAtencionesRealizadas extends JFrame {
         contentPane.add(txtBuscar);
 
         JButton btnBuscar = new JButton("Buscar");
+        btnBuscar.setFont(new Font("Tahoma", Font.BOLD, 10));
+        btnBuscar.setBackground(SystemColor.activeCaption);
         btnBuscar.setBounds(290, 60, 90, 25);
         contentPane.add(btnBuscar);
 
-        // ================= CABECERA DE DATOS =================
         lblNombreMascota = new JLabel("-");
         lblNombreMascota.setFont(new Font("Tahoma", Font.BOLD, 14));
         lblNombreMascota.setBounds(20, 100, 200, 25);
@@ -65,7 +71,6 @@ public class ViewAtencionesRealizadas extends JFrame {
         lblDueno.setBounds(20, 145, 300, 20);
         contentPane.add(lblDueno);
 
-        // ================= TEXTAREA DEL HISTORIAL CLÍNICO =================
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(20, 180, 440, 310);
         contentPane.add(scrollPane);
@@ -75,8 +80,18 @@ public class ViewAtencionesRealizadas extends JFrame {
         txtAreaAtenciones.setFont(new Font("Monospaced", Font.PLAIN, 12));
         txtAreaAtenciones.setBackground(new Color(250, 250, 250));
         scrollPane.setViewportView(txtAreaAtenciones);
+        
+        btn_Regresar = new JButton("Regresar");
+        btn_Regresar.setBackground(SystemColor.activeCaption); 
+        btn_Regresar.setFont(new Font("Tahoma", Font.BOLD, 10));
+        btn_Regresar.setBounds(392, 60, 84, 25);
+        contentPane.add(btn_Regresar);
+    
+        btn_Regresar.addActionListener(e -> {
+            new menu().setVisible(true);
+            dispose();
+        });
 
-        // ================= EVENTOS =================
         btnBuscar.addActionListener(e -> buscarAtenciones());
         
         setLocationRelativeTo(null);
@@ -89,32 +104,9 @@ public class ViewAtencionesRealizadas extends JFrame {
             return;
         }
 
-        String idMascotaEncontrada = "";
-        
-        // 1. Buscar los datos principales de la mascota
-        try {
-            List<String[]> mascotas = new Libreria_generica.GenericDAO<Mascota>("src/doc/mascota.txt").cargarTodo();
-            for (String[] m : mascotas) {
-                if (m[0].equalsIgnoreCase(termino) || m[1].equalsIgnoreCase(termino)) {
-                    idMascotaEncontrada = m[0];
-                    lblNombreMascota.setText(m[1]); // Nombre
-                    lblEspecie.setText(m[2]);       // Especie
-                    
-                    // Extraer solo el nombre del propietario
-                    String dueñoFull = m[6];
-                    if(dueñoFull.contains("-")) {
-                        lblDueno.setText("Dueño: " + dueñoFull.split("-")[1].trim());
-                    } else {
-                        lblDueno.setText("Dueño: " + dueñoFull);
-                    }
-                    break;
-                }
-            }
-        } catch (Exception ex) {
-            System.err.println("Error al leer archivo de mascotas.");
-        }
+        String[] mascota = controller.buscarMascotaCompleta(termino);
 
-        if (idMascotaEncontrada.isEmpty()) {
+        if (mascota == null) {
             JOptionPane.showMessageDialog(this, "Mascota no encontrada en el sistema.", "Error", JOptionPane.ERROR_MESSAGE);
             lblNombreMascota.setText("-");
             lblEspecie.setText("-");
@@ -123,43 +115,20 @@ public class ViewAtencionesRealizadas extends JFrame {
             return;
         }
 
-        // 2. Buscar e imprimir las atenciones médicas realizadas
-        StringBuilder sb = new StringBuilder();
-        boolean tieneAtenciones = false;
-
-        try {
-            List<String[]> atenciones = new Libreria_generica.GenericDAO<Atencion>("src/doc/atenciones.txt").cargarTodo();
-            for (String[] a : atenciones) {
-                // a[2] corresponde a idMascota según el modelo Atencion.java
-                if (a.length == 9 && a[2].equalsIgnoreCase(idMascotaEncontrada)) {
-                    
-                    sb.append("--------------------------------\n");
-                    sb.append(a[0]).append("\n"); // ID Atención
-                    sb.append("Fecha: ").append(a[3]).append("\n\n"); // Fecha
-                    
-                    sb.append("Diagnóstico:\n");
-                    sb.append(a[6]).append("\n\n"); // Diagnóstico
-                    
-                    sb.append("Tratamiento:\n");
-                    sb.append(a[7]).append("\n"); // Tratamiento
-                    
-                    tieneAtenciones = true;
-                }
-            }
-        } catch (Exception ex) {
-            System.err.println("Error al leer archivo de atenciones.");
-        }
-
-        if (tieneAtenciones) {
-            sb.append("--------------------------------\n");
-        } else {
-            sb.append("--------------------------------\n");
-            sb.append("No hay atenciones médicas registradas para este paciente.\n");
-            sb.append("--------------------------------\n");
-        }
+        String idMascotaEncontrada = mascota[0];
+        lblNombreMascota.setText(mascota[1]); 
+        lblEspecie.setText(mascota[2]);       
         
-        txtAreaAtenciones.setText(sb.toString());
-        // Forzar el scroll al inicio para que se lea desde el primer registro
-        txtAreaAtenciones.setCaretPosition(0);
+        String duenoFull = mascota[6];
+        if (duenoFull.contains("-")) {
+            lblDueno.setText("Dueño: " + duenoFull.split("-")[1].trim());
+        } else {
+            lblDueno.setText("Dueño: " + duenoFull);
+        }
+
+        String historialTexto = controller.obtenerHistorialClinico(idMascotaEncontrada);
+        
+        txtAreaAtenciones.setText(historialTexto);
+        txtAreaAtenciones.setCaretPosition(0); 
     }
 }

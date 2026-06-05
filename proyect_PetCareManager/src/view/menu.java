@@ -7,6 +7,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import java.awt.SystemColor;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
 
 public class menu extends JFrame {
 
@@ -55,7 +58,6 @@ public class menu extends JFrame {
         JMenuItem mntmVacunas = new JMenuItem("Vacunas");
         mnConsultas.add(mntmVacunas);
 
-        // CORRECCIÓN: Separación de Registro y Revisión
         JMenuItem mntmRegistrarAtencion = new JMenuItem("Registrar Atención Médica");
         mnConsultas.add(mntmRegistrarAtencion);
         
@@ -69,20 +71,24 @@ public class menu extends JFrame {
         mnOpciones.add(mntmSalir);
 
         contentPane = new JPanel();
+        contentPane.setBackground(SystemColor.inactiveCaption);
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
+        
+        JLabel lblNewLabel = new JLabel("New label");
+        lblNewLabel.setIcon(new ImageIcon(menu.class.getResource("/recursos/menu_cachorros.png")));
+        lblNewLabel.setBounds(10, 25, 466, 256);
+        contentPane.add(lblNewLabel);
 
-        // ACCIONES DE LOS MENÚS
         mntmPropietarios.addActionListener(e -> new ViewPropietarios().setVisible(true));
         mntmMascotas.addActionListener(e -> new ViewMascota().setVisible(true));
         mntmCitas.addActionListener(e -> new ViewCitas().setVisible(true));
         mntmHistorial.addActionListener(e -> new ViewHistorial().setVisible(true));
         mntmVacunas.addActionListener(e -> new ViewVacunas().setVisible(true));
         
-        // Enlaces corregidos
-        mntmRegistrarAtencion.addActionListener(e -> new ViewAtenciones().setVisible(true)); // Pantalla de ingreso
-        mntmAtenciones.addActionListener(e -> new ViewAtencionesRealizadas().setVisible(true)); // Pantalla de revisión
+        mntmRegistrarAtencion.addActionListener(e -> new ViewAtenciones().setVisible(true)); 
+        mntmAtenciones.addActionListener(e -> new ViewAtencionesRealizadas().setVisible(true)); 
         
         mntmSalir.addActionListener(e -> System.exit(0));
         

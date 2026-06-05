@@ -2,6 +2,7 @@ package view;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.SystemColor;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,10 +14,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-
 import controller.VacunaController;
-import model.Mascota;
-import model.Vacuna;
 
 public class ViewVacunas extends JFrame {
 
@@ -24,11 +22,9 @@ public class ViewVacunas extends JFrame {
     private JPanel contentPane;
     private JTextField txtBuscar;
     private JLabel lblValorNombre, lblValorEspecie, lblValorEdad;
-    
     private JTextField txtNombreVacuna, txtFecha, txtObservacion;
     private JTable tablaVacunas;
     private DefaultTableModel modeloTabla;
-    
     private VacunaController controller;
     private String idMascotaSeleccionada = "";
 
@@ -40,6 +36,7 @@ public class ViewVacunas extends JFrame {
         setBounds(100, 100, 650, 550);
 
         contentPane = new JPanel();
+        contentPane.setBackground(SystemColor.inactiveCaption);
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(null);
         setContentPane(contentPane);
@@ -49,7 +46,6 @@ public class ViewVacunas extends JFrame {
         lblTitulo.setBounds(250, 10, 200, 25);
         contentPane.add(lblTitulo);
 
-        // ================= PASO 1: BUSCAR MASCOTA =================
         JLabel lblBuscar = new JLabel("Buscar Mascota (ID o Nombre):");
         lblBuscar.setBounds(20, 50, 180, 25);
         contentPane.add(lblBuscar);
@@ -59,13 +55,14 @@ public class ViewVacunas extends JFrame {
         contentPane.add(txtBuscar);
 
         JButton btnBuscar = new JButton("Buscar");
+        btnBuscar.setFont(new Font("Tahoma", Font.BOLD, 11));
+        btnBuscar.setBackground(SystemColor.activeCaption);
         btnBuscar.setBounds(330, 50, 80, 25);
         contentPane.add(btnBuscar);
 
-        // ================= MOSTRAR DATOS DE MASCOTA =================
         JPanel panelDatos = new JPanel();
         panelDatos.setBounds(20, 90, 590, 40);
-        panelDatos.setBackground(new Color(240, 248, 255)); // Color de fondo suave
+        panelDatos.setBackground(new Color(240, 248, 255));
         panelDatos.setLayout(null);
         contentPane.add(panelDatos);
 
@@ -84,7 +81,6 @@ public class ViewVacunas extends JFrame {
         lblValorEdad.setBounds(400, 10, 150, 20);
         panelDatos.add(lblValorEdad);
 
-        // ================= TABLA DE VACUNAS EXISTENTES =================
         JLabel lblSubtituloTabla = new JLabel("Vacunas Aplicadas:");
         lblSubtituloTabla.setFont(new Font("Tahoma", Font.BOLD, 12));
         lblSubtituloTabla.setBounds(20, 150, 200, 20);
@@ -97,12 +93,11 @@ public class ViewVacunas extends JFrame {
         tablaVacunas = new JTable();
         modeloTabla = new DefaultTableModel(
             new Object[][] {},
-            new String[] { "Vacuna", "Fecha" } // Solo mostramos estos dos datos como pediste
+            new String[] { "Vacuna", "Fecha" }
         );
         tablaVacunas.setModel(modeloTabla);
         scrollPane.setViewportView(tablaVacunas);
 
-        // ================= FORMULARIO PARA AGREGAR VACUNA =================
         JLabel lblSubtituloForm = new JLabel("Registrar Nueva Vacuna:");
         lblSubtituloForm.setFont(new Font("Tahoma", Font.BOLD, 12));
         lblSubtituloForm.setBounds(20, 350, 200, 20);
@@ -122,7 +117,6 @@ public class ViewVacunas extends JFrame {
 
         txtFecha = new JTextField();
         txtFecha.setBounds(340, 380, 100, 25);
-        txtFecha.setToolTipText("DD/MM/AAAA");
         contentPane.add(txtFecha);
 
         JLabel lblObs = new JLabel("Observación:");
@@ -134,12 +128,17 @@ public class ViewVacunas extends JFrame {
         contentPane.add(txtObservacion);
 
         JButton btnAgregar = new JButton("Agregar Vacuna");
-        btnAgregar.setBounds(460, 380, 150, 65); // Botón grande
+        btnAgregar.setFont(new Font("Tahoma", Font.BOLD, 11));
+        btnAgregar.setBackground(SystemColor.activeCaption);
+        btnAgregar.setBounds(460, 380, 150, 30);
         contentPane.add(btnAgregar);
 
-        // ================= EVENTOS =================
+        JButton btnRegresar = new JButton("Regresar");
+        btnRegresar.setFont(new Font("Tahoma", Font.BOLD, 11));
+        btnRegresar.setBackground(SystemColor.activeCaption);
+        btnRegresar.setBounds(460, 415, 150, 30);
+        contentPane.add(btnRegresar);
 
-        // Buscar mascota
         btnBuscar.addActionListener(e -> {
             String termino = txtBuscar.getText().trim();
             if (termino.isEmpty()) {
@@ -147,36 +146,23 @@ public class ViewVacunas extends JFrame {
                 return;
             }
 
-            boolean encontrada = false;
-            try {
-                List<String[]> mascotas = new Libreria_generica.GenericDAO<Mascota>("src/doc/mascota.txt").cargarTodo();
-                for (String[] m : mascotas) {
-                    if (m[0].equalsIgnoreCase(termino) || m[1].equalsIgnoreCase(termino)) {
-                        idMascotaSeleccionada = m[0];
-                        lblValorNombre.setText(m[1]); // Nombre
-                        lblValorEspecie.setText(m[2]); // Especie
-                        lblValorEdad.setText(m[4] + " años"); // Edad
-                        
-                        encontrada = true;
-                        cargarTablaVacunas(); // Carga las vacunas de esta mascota
-                        break;
-                    }
-                }
-            } catch (Exception ex) {
-                System.err.println("Error al leer mascotas: " + ex.getMessage());
-            }
-
-            if (!encontrada) {
+            String[] m = controller.buscarMascota(termino);
+            if (m != null) {
+                idMascotaSeleccionada = m[0];
+                lblValorNombre.setText(m[1]);
+                lblValorEspecie.setText(m[2]);
+                lblValorEdad.setText(m[4] + " años");
+                cargarTablaVacunas();
+            } else {
                 JOptionPane.showMessageDialog(this, "Mascota no encontrada.");
                 idMascotaSeleccionada = "";
                 lblValorNombre.setText("-");
                 lblValorEspecie.setText("-");
                 lblValorEdad.setText("-");
-                modeloTabla.setRowCount(0); // Vaciar tabla
+                modeloTabla.setRowCount(0);
             }
         });
 
-        // Agregar Vacuna
         btnAgregar.addActionListener(e -> {
             if (idMascotaSeleccionada.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Primero debe buscar y seleccionar una mascota.");
@@ -187,49 +173,40 @@ public class ViewVacunas extends JFrame {
             String fecha = txtFecha.getText().trim();
             String obs = txtObservacion.getText().trim();
 
-            if (nombreVac.isEmpty() || fecha.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "El nombre de la vacuna y la fecha son obligatorios.");
-                return;
-            }
-
-            // Validar Regex
             String validacion = controller.validarFormatos(nombreVac, fecha, obs);
             if (!validacion.equals("OK")) {
-                JOptionPane.showMessageDialog(this, validacion, "Error de formato", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, validacion, "Error de Validación", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            // Guardar
             if (controller.registrarVacuna(idMascotaSeleccionada, nombreVac, fecha, obs)) {
                 JOptionPane.showMessageDialog(this, "Vacuna registrada con éxito.");
                 txtNombreVacuna.setText("");
                 txtFecha.setText("");
                 txtObservacion.setText("");
-                cargarTablaVacunas(); // Recargar la tabla automáticamente
+                cargarTablaVacunas();
             }
+        });
+
+        btnRegresar.addActionListener(e -> {
+            new menu().setVisible(true);
+            dispose();
         });
 
         setLocationRelativeTo(null);
     }
 
-    // Método para filtrar las vacunas por la mascota actual
     private void cargarTablaVacunas() {
-        modeloTabla.setRowCount(0); // Limpiar
+        modeloTabla.setRowCount(0);
         if (idMascotaSeleccionada.isEmpty()) return;
 
-        try {
-            List<String[]> vacunas = new Libreria_generica.GenericDAO<Vacuna>("src/doc/vacunas.txt").cargarTodo();
-            if (vacunas != null) {
-                for (String[] v : vacunas) {
-                    // v[1] es idMascota en el modelo Vacuna.java
-                    if (v.length == 5 && v[1].equals(idMascotaSeleccionada)) {
-                        // Agregamos solo Nombre Vacuna (v[2]) y Fecha (v[3]) a la tabla
-                        modeloTabla.addRow(new Object[]{ v[2], v[3] });
-                    }
+        List<String[]> vacunas = controller.obtenerTodasLasVacunas();
+        if (vacunas != null) {
+            for (String[] v : vacunas) {
+                if (v.length == 5 && v[1].equals(idMascotaSeleccionada)) {
+                    modeloTabla.addRow(new Object[]{ v[2], v[3] });
                 }
             }
-        } catch (Exception e) {
-            System.err.println("Error al cargar vacunas: " + e.getMessage());
         }
     }
 }

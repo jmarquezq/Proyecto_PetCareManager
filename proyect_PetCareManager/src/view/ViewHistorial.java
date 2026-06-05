@@ -2,7 +2,7 @@ package view;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.util.List;
+import java.awt.SystemColor;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -12,8 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import model.Cita;
-import model.Mascota;
+import controller.CitaController;
 
 public class ViewHistorial extends JFrame {
 
@@ -22,13 +21,17 @@ public class ViewHistorial extends JFrame {
     private JTextField txtBuscar;
     private JLabel lblValorMascota, lblValorDueno, lblValorEspecie;
     private JTextArea txtAreaHistorial;
+    private CitaController controller;
 
     public ViewHistorial() {
+        controller = new CitaController();
+
         setTitle("Historial Médico - PetCare");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 450, 500);
+        setBounds(100, 100, 458, 500);
 
         contentPane = new JPanel();
+        contentPane.setBackground(SystemColor.inactiveCaption);
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(null);
         setContentPane(contentPane);
@@ -38,20 +41,20 @@ public class ViewHistorial extends JFrame {
         lblTitulo.setBounds(120, 15, 250, 25);
         contentPane.add(lblTitulo);
 
-        // BUSCADOR
         JLabel lblBuscar = new JLabel("Buscar (ID o Nombre):");
         lblBuscar.setBounds(20, 60, 150, 25);
         contentPane.add(lblBuscar);
 
         txtBuscar = new JTextField();
-        txtBuscar.setBounds(160, 60, 120, 25);
+        txtBuscar.setBounds(135, 60, 120, 25);
         contentPane.add(txtBuscar);
 
         JButton btnBuscar = new JButton("Buscar");
-        btnBuscar.setBounds(290, 60, 90, 25);
+        btnBuscar.setFont(new Font("Tahoma", Font.BOLD, 10));
+        btnBuscar.setBackground(SystemColor.activeCaption);
+        btnBuscar.setBounds(265, 60, 74, 25);
         contentPane.add(btnBuscar);
 
-        // DATOS DE LA MASCOTA
         JLabel lblMascota = new JLabel("Mascota:");
         lblMascota.setBounds(20, 100, 60, 25);
         contentPane.add(lblMascota);
@@ -79,7 +82,6 @@ public class ViewHistorial extends JFrame {
         lblValorEspecie.setBounds(80, 150, 150, 25);
         contentPane.add(lblValorEspecie);
 
-        // TEXTAREA DEL HISTORIAL
         JLabel lblHistorial = new JLabel("Historial:");
         lblHistorial.setBounds(20, 190, 80, 25);
         contentPane.add(lblHistorial);
@@ -89,13 +91,23 @@ public class ViewHistorial extends JFrame {
         contentPane.add(scrollPane);
 
         txtAreaHistorial = new JTextArea();
-        txtAreaHistorial.setEditable(false); // Solo lectura
+        txtAreaHistorial.setEditable(false);
         txtAreaHistorial.setFont(new Font("Monospaced", Font.PLAIN, 12));
         txtAreaHistorial.setBackground(new Color(245, 245, 245));
         scrollPane.setViewportView(txtAreaHistorial);
+        
+        JButton btn_Regresar = new JButton("Regresar");
+        btn_Regresar.setFont(new Font("Tahoma", Font.BOLD, 10));
+        btn_Regresar.setBackground(SystemColor.activeCaption);
+        btn_Regresar.setBounds(349, 60, 87, 25);
+        contentPane.add(btn_Regresar);
 
-        // EVENTO BUSCAR
         btnBuscar.addActionListener(e -> buscarHistorial());
+        
+        btn_Regresar.addActionListener(e -> {
+            new menu().setVisible(true);
+            dispose();
+        });
         
         setLocationRelativeTo(null);
     }
@@ -107,60 +119,29 @@ public class ViewHistorial extends JFrame {
             return;
         }
 
-        String idMascotaEncontrada = "";
-        
-        // 1. Buscar los datos de la mascota
-        try {
-            List<String[]> mascotas = new Libreria_generica.GenericDAO<Mascota>("src/doc/mascota.txt").cargarTodo();
-            for (String[] m : mascotas) {
-                if (m[0].equalsIgnoreCase(termino) || m[1].equalsIgnoreCase(termino)) {
-                    idMascotaEncontrada = m[0];
-                    lblValorMascota.setText(m[1]);
-                    lblValorEspecie.setText(m[2]);
-                    
-                    // Formatear dueño
-                    String dueñoFull = m[6];
-                    if(dueñoFull.contains("-")) {
-                        lblValorDueno.setText(dueñoFull.split("-")[1].trim());
-                    } else {
-                        lblValorDueno.setText(dueñoFull);
-                    }
-                    break;
-                }
-            }
-        } catch (Exception ex) {
-            System.err.println("Error al leer mascotas.");
-        }
+        String[] m = controller.buscarMascota(termino);
 
-        if (idMascotaEncontrada.isEmpty()) {
+        if (m == null) {
             JOptionPane.showMessageDialog(this, "Mascota no encontrada.");
+            lblValorMascota.setText("-");
+            lblValorEspecie.setText("-");
+            lblValorDueno.setText("-");
+            txtAreaHistorial.setText("");
             return;
         }
 
-        // 2. Buscar e imprimir las citas de esa mascota
-        StringBuilder sb = new StringBuilder();
-        sb.append("--------------------------------\n");
+        String idMascotaEncontrada = m[0];
+        lblValorMascota.setText(m[1]);
+        lblValorEspecie.setText(m[2]);
         
-        boolean tieneCitas = false;
-        try {
-            List<String[]> citas = new Libreria_generica.GenericDAO<Cita>("src/doc/citas.txt").cargarTodo();
-            for (String[] c : citas) {
-                // c[1] es el idMascota en el archivo de citas
-                if (c.length == 5 && c[1].equals(idMascotaEncontrada)) {
-                    // Formato: Fecha + Motivo
-                    sb.append(c[2]).append(" ").append(c[4]).append("\n");
-                    tieneCitas = true;
-                }
-            }
-        } catch (Exception ex) {
-            System.err.println("Error al leer citas.");
+        String duenoFull = m[6];
+        if (duenoFull.contains("-")) {
+            lblValorDueno.setText(duenoFull.split("-")[1].trim());
+        } else {
+            lblValorDueno.setText(duenoFull);
         }
 
-        if (!tieneCitas) {
-            sb.append("Sin atenciones registradas.\n");
-        }
-        sb.append("--------------------------------\n");
-        
-        txtAreaHistorial.setText(sb.toString());
+        String historialTexto = controller.obtenerHistorialTurnos(idMascotaEncontrada);
+        txtAreaHistorial.setText(historialTexto);
     }
 }

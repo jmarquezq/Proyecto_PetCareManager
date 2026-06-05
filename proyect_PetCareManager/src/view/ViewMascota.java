@@ -1,7 +1,8 @@
 package view;
 
+import java.awt.Color;
 import java.awt.Font;
-import java.io.IOException;
+import java.awt.SystemColor;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -14,10 +15,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-
 import controller.MascotaController;
-import model.Mascota;
-import model.Propietario;
 
 public class ViewMascota extends JFrame {
 
@@ -33,10 +31,11 @@ public class ViewMascota extends JFrame {
         controller = new MascotaController();
 
         setTitle("Registro de Mascotas - PetCare");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // ¡Cambio aplicado!
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
         setBounds(100, 100, 850, 420);
 
         contentPane = new JPanel();
+        contentPane.setBackground(SystemColor.inactiveCaption); 
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(null);
         setContentPane(contentPane);
@@ -46,7 +45,6 @@ public class ViewMascota extends JFrame {
         lblTitulo.setBounds(350, 15, 250, 25);
         contentPane.add(lblTitulo);
 
-        // FORMULARIO: 7 CAMPOS
         crearLabel(10, 60, "ID Mascota:");
         txtIdMascota = crearTextField(100, 60);
 
@@ -65,20 +63,28 @@ public class ViewMascota extends JFrame {
         crearLabel(10, 235, "Sexo:");
         cbSexo = new JComboBox<>(new String[]{"Macho", "Hembra"});
         cbSexo.setBounds(100, 235, 150, 25);
+        cbSexo.setBackground(Color.WHITE);
         contentPane.add(cbSexo);
 
         crearLabel(10, 270, "Propietario:");
         cbPropietario = new JComboBox<>();
         cbPropietario.setBounds(100, 270, 150, 25);
+        cbPropietario.setBackground(Color.WHITE);
         contentPane.add(cbPropietario);
-        cargarPropietarios(); // Llena el combo con el txt
+        cargarPropietarios(); 
 
-        // BOTONES
         JButton btnGuardar = new JButton("Registrar");
-        btnGuardar.setBounds(10, 320, 100, 25);
+        btnGuardar.setFont(new Font("Tahoma", Font.BOLD, 11));
+        btnGuardar.setBackground(SystemColor.activeCaption); 
+        btnGuardar.setBounds(10, 320, 110, 25);
         contentPane.add(btnGuardar);
 
-        // TABLA
+        JButton btnRegresar = new JButton("Regresar");
+        btnRegresar.setFont(new Font("Tahoma", Font.BOLD, 11));
+        btnRegresar.setBackground(SystemColor.activeCaption); 
+        btnRegresar.setBounds(140, 320, 110, 25);
+        contentPane.add(btnRegresar);
+
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(280, 60, 530, 285);
         contentPane.add(scrollPane);
@@ -91,13 +97,12 @@ public class ViewMascota extends JFrame {
         tablaMascotas.setModel(modeloTabla);
         scrollPane.setViewportView(tablaMascotas);
 
-     // EVENTO DEL BOTÓN GUARDAR (REEMPLAZAR EN TU CÓDIGO)
         btnGuardar.addActionListener(e -> {
-            String id = txtIdMascota.getText();
-            String nombre = txtNombre.getText();
-            String especie = txtEspecie.getText();
-            String raza = txtRaza.getText();
-            String edad = txtEdad.getText();
+            String id = txtIdMascota.getText().trim();
+            String nombre = txtNombre.getText().trim();
+            String especie = txtEspecie.getText().trim();
+            String raza = txtRaza.getText().trim();
+            String edad = txtEdad.getText().trim();
             String sexo = cbSexo.getSelectedItem().toString();
             
             if (cbPropietario.getSelectedItem() == null || cbPropietario.getSelectedItem().toString().equals("Sin registrar")) {
@@ -106,20 +111,12 @@ public class ViewMascota extends JFrame {
             }
             String prop = cbPropietario.getSelectedItem().toString();
 
-            // Validar campos vacíos
-            if (id.isEmpty() || nombre.isEmpty() || especie.isEmpty() || raza.isEmpty() || edad.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Debe completar todos los datos de la mascota.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            // Validar Expresiones Regulares
             String validacion = controller.validarFormatos(id, nombre, especie, raza, edad);
             if (!validacion.equals("OK")) {
-                JOptionPane.showMessageDialog(this, validacion, "Error de Formato", JOptionPane.ERROR_MESSAGE);
-                return; // Detiene el registro
+                JOptionPane.showMessageDialog(this, validacion, "Error de Validación", JOptionPane.WARNING_MESSAGE);
+                return; 
             }
 
-            // Si todo está correcto, se registra
             if (controller.registrarMascota(id, nombre, especie, raza, edad, sexo, prop)) {
                 JOptionPane.showMessageDialog(this, "Mascota registrada con éxito.");
                 txtIdMascota.setText(""); txtNombre.setText(""); txtEspecie.setText("");
@@ -128,11 +125,15 @@ public class ViewMascota extends JFrame {
             }
         });
 
+        btnRegresar.addActionListener(e -> {
+            new menu().setVisible(true);
+            dispose();
+        });
+
         llenarTabla();
         setLocationRelativeTo(null); 
     }
 
-    // Funciones de utilidad para no repetir código en la vista
     private void crearLabel(int x, int y, String texto) {
         JLabel label = new JLabel(texto);
         label.setBounds(x, y, 80, 25);
@@ -146,35 +147,29 @@ public class ViewMascota extends JFrame {
         return textField;
     }
 
-    // Método clave que lee el archivo de propietarios y llena la lista desplegable
     private void cargarPropietarios() {
-        try {
-            List<String[]> propietarios = new Libreria_generica.GenericDAO<Propietario>("src/doc/propietarios.txt").cargarTodo();
-            if (propietarios != null && !propietarios.isEmpty()) {
-                for (String[] prop : propietarios) {
-                    if (prop.length >= 2) {
-                        cbPropietario.addItem(prop[0] + " - " + prop[1]); // Cédula - Nombre
-                    }
+        cbPropietario.removeAllItems();
+        List<String[]> propietarios = controller.obtenerTodosLosPropietarios();
+        if (propietarios != null && !propietarios.isEmpty()) {
+            for (String[] prop : propietarios) {
+                if (prop.length >= 2) {
+                    cbPropietario.addItem(prop[0] + " - " + prop[1]);
                 }
-            } else {
-                cbPropietario.addItem("Sin registrar");
             }
-        } catch (Exception e) {
-            System.err.println("Error al cargar dueños: " + e.getMessage());
+        } else {
+            cbPropietario.addItem("Sin registrar");
         }
     }
 
     private void llenarTabla() {
         modeloTabla.setRowCount(0); 
-        try {
-            List<String[]> lista = new Libreria_generica.GenericDAO<Mascota>("src/doc/mascota.txt").cargarTodo();
-            if (lista != null) {
-                for (String[] registro : lista) {
-                    if(registro.length == 7) modeloTabla.addRow(registro);
+        List<String[]> lista = controller.obtenerTodasLasMascotas();
+        if (lista != null) {
+            for (String[] registro : lista) {
+                if (registro.length == 7) {
+                    modeloTabla.addRow(registro);
                 }
             }
-        } catch (IOException e) {
-            System.err.println("Error al cargar mascotas: " + e.getMessage());
         }
     }
 }

@@ -1,7 +1,8 @@
 package view;
 
+import java.awt.Color;
 import java.awt.Font;
-import java.io.IOException;
+import java.awt.SystemColor;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,7 +15,6 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import controller.PropietarioController;
-import model.Propietario;
 
 public class ViewPropietarios extends JFrame {
 
@@ -29,10 +29,11 @@ public class ViewPropietarios extends JFrame {
         controller = new PropietarioController();
 
         setTitle("Registro de Propietarios - PetCare");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // ¡No cierra el menú principal!
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
         setBounds(100, 100, 750, 420);
 
         contentPane = new JPanel();
+        contentPane.setBackground(SystemColor.inactiveCaption);
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(null);
         setContentPane(contentPane);
@@ -42,7 +43,6 @@ public class ViewPropietarios extends JFrame {
         lblTitulo.setBounds(250, 15, 250, 25);
         contentPane.add(lblTitulo);
 
-        // FORMULARIO
         crearLabel(10, 65, "Cédula:");
         txtCedula = crearTextField(100, 65);
         
@@ -59,10 +59,17 @@ public class ViewPropietarios extends JFrame {
         txtCorreo = crearTextField(100, 225);
 
         JButton btnGuardar = new JButton("Registrar");
+        btnGuardar.setFont(new Font("Tahoma", Font.BOLD, 11));
+        btnGuardar.setBackground(SystemColor.activeCaption);
         btnGuardar.setBounds(10, 280, 110, 25);
         contentPane.add(btnGuardar);
 
-        // TABLA
+        JButton btnRegresar = new JButton("Regresar");
+        btnRegresar.setFont(new Font("Tahoma", Font.BOLD, 11));
+        btnRegresar.setBackground(SystemColor.activeCaption);
+        btnRegresar.setBounds(140, 280, 110, 25);
+        contentPane.add(btnRegresar);
+
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(280, 65, 430, 280);
         contentPane.add(scrollPane);
@@ -75,34 +82,30 @@ public class ViewPropietarios extends JFrame {
         tablaPropietarios.setModel(modeloTabla);
         scrollPane.setViewportView(tablaPropietarios);
 
-     // EVENTO DEL BOTÓN GUARDAR 
         btnGuardar.addActionListener(e -> {
-            String cedula = txtCedula.getText();
-            String nombre = txtNombre.getText();
-            String telefono = txtTelefono.getText();
-            String direccion = txtDireccion.getText();
-            String correo = txtCorreo.getText();
+            String cedula = txtCedula.getText().trim();
+            String nombre = txtNombre.getText().trim();
+            String telefono = txtTelefono.getText().trim();
+            String direccion = txtDireccion.getText().trim();
+            String correo = txtCorreo.getText().trim();
 
-            // Validar que no estén vacíos
-            if (cedula.isEmpty() || nombre.isEmpty() || telefono.isEmpty() || direccion.isEmpty() || correo.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            // Validar Expresiones Regulares
             String validacion = controller.validarFormatos(cedula, nombre, telefono, direccion, correo);
             if (!validacion.equals("OK")) {
-                JOptionPane.showMessageDialog(this, validacion, "Error de Formato", JOptionPane.ERROR_MESSAGE);
-                return; // Detiene el registro si hay error
+                JOptionPane.showMessageDialog(this, validacion, "Error de Validación", JOptionPane.WARNING_MESSAGE);
+                return; 
             }
 
-            // Si pasa el filtro Regex, se registra
             if (controller.registrarPropietario(cedula, nombre, telefono, direccion, correo)) {
                 JOptionPane.showMessageDialog(this, "Propietario registrado con éxito.");
                 txtCedula.setText(""); txtNombre.setText(""); txtTelefono.setText("");
                 txtDireccion.setText(""); txtCorreo.setText("");
                 llenarTabla();
             }
+        });
+
+        btnRegresar.addActionListener(e -> {
+            new menu().setVisible(true);
+            dispose();
         });
 
         llenarTabla();
@@ -124,13 +127,13 @@ public class ViewPropietarios extends JFrame {
 
     private void llenarTabla() {
         modeloTabla.setRowCount(0);
-        try {
-            List<String[]> lista = new Libreria_generica.GenericDAO<Propietario>("src/doc/propietarios.txt").cargarTodo();
-            if (lista != null) {
-                for (String[] r : lista) if (r.length == 5) modeloTabla.addRow(r);
+        List<String[]> lista = controller.obtenerTodosLosPropietarios();
+        if (lista != null) {
+            for (String[] r : lista) {
+                if (r.length == 5) {
+                    modeloTabla.addRow(r);
+                }
             }
-        } catch (IOException e) {
-            System.err.println("Error: " + e.getMessage());
         }
     }
 }

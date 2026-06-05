@@ -2,7 +2,7 @@ package view;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.io.IOException;
+import java.awt.SystemColor;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -16,8 +16,6 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import controller.CitaController;
-import model.Cita;
-import model.Mascota;
 
 public class ViewCitas extends JFrame {
 
@@ -30,8 +28,6 @@ public class ViewCitas extends JFrame {
     private JTable tablaCitas;
     private DefaultTableModel modeloTabla;
     private CitaController controller;
-    
-    // Variable interna para guardar el ID de la mascota encontrada
     private String idMascotaSeleccionada = "";
 
     public ViewCitas() {
@@ -42,6 +38,7 @@ public class ViewCitas extends JFrame {
         setBounds(100, 100, 780, 480);
 
         contentPane = new JPanel();
+        contentPane.setBackground(SystemColor.inactiveCaption);
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(null);
         setContentPane(contentPane);
@@ -51,7 +48,6 @@ public class ViewCitas extends JFrame {
         lblTitulo.setBounds(280, 10, 250, 25);
         contentPane.add(lblTitulo);
 
-        // ================= PASO 1: BUSCAR MASCOTA =================
         JLabel lblPaso1 = new JLabel("Paso 1: Buscar Mascota (ID o Nombre)");
         lblPaso1.setFont(new Font("Tahoma", Font.BOLD, 11));
         lblPaso1.setBounds(10, 45, 250, 20);
@@ -62,17 +58,18 @@ public class ViewCitas extends JFrame {
         contentPane.add(txtBuscar);
 
         JButton btnBuscar = new JButton("Buscar");
+        btnBuscar.setBackground(SystemColor.activeCaption);
+        btnBuscar.setFont(new Font("Tahoma", Font.BOLD, 10));
         btnBuscar.setBounds(170, 70, 80, 25);
         contentPane.add(btnBuscar);
 
-        // ================= PASO 2: DATOS ENCONTRADOS =================
         JLabel lblMascota = new JLabel("Mascota:");
         lblMascota.setBounds(10, 110, 80, 25);
         contentPane.add(lblMascota);
 
         txtMascota = new JTextField();
         txtMascota.setBounds(100, 110, 150, 25);
-        txtMascota.setEditable(false); // Solo lectura
+        txtMascota.setEditable(false);
         txtMascota.setBackground(Color.LIGHT_GRAY);
         contentPane.add(txtMascota);
 
@@ -82,11 +79,10 @@ public class ViewCitas extends JFrame {
 
         txtPropietario = new JTextField();
         txtPropietario.setBounds(100, 140, 150, 25);
-        txtPropietario.setEditable(false); // Solo lectura
+        txtPropietario.setEditable(false);
         txtPropietario.setBackground(Color.LIGHT_GRAY);
         contentPane.add(txtPropietario);
 
-        // ================= PASO 3: INGRESAR DATOS CITA =================
         JLabel lblFecha = new JLabel("Fecha:");
         lblFecha.setBounds(10, 190, 80, 25);
         contentPane.add(lblFecha);
@@ -119,17 +115,21 @@ public class ViewCitas extends JFrame {
 
         cbMotivo = new JComboBox<>(new String[]{"Consulta General", "Vacuna", "Control", "Seguimiento"});
         cbMotivo.setBounds(100, 250, 150, 25);
+        cbMotivo.setBackground(Color.WHITE);
         contentPane.add(cbMotivo);
 
         JButton btnAgendar = new JButton("Agendar");
+        btnAgendar.setFont(new Font("Tahoma", Font.BOLD, 10));
+        btnAgendar.setBackground(SystemColor.activeCaption);
         btnAgendar.setBounds(10, 300, 110, 25);
         contentPane.add(btnAgendar);
 
-        JButton btnLimpiar = new JButton("Limpiar");
-        btnLimpiar.setBounds(140, 300, 110, 25);
-        contentPane.add(btnLimpiar);
+        JButton btn_Regresar = new JButton("Regresar");
+        btn_Regresar.setBackground(SystemColor.activeCaption);
+        btn_Regresar.setFont(new Font("Tahoma", Font.BOLD, 10));
+        btn_Regresar.setBounds(140, 300, 110, 25);
+        contentPane.add(btn_Regresar);
 
-        // TABLA
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(310, 70, 430, 255);
         contentPane.add(scrollPane);
@@ -142,9 +142,6 @@ public class ViewCitas extends JFrame {
         tablaCitas.setModel(modeloTabla);
         scrollPane.setViewportView(tablaCitas);
 
-        // ================= EVENTOS =================
-
-        // EVENTO: BUSCAR MASCOTA
         btnBuscar.addActionListener(e -> {
             String termino = txtBuscar.getText().trim();
             if (termino.isEmpty()) {
@@ -152,32 +149,17 @@ public class ViewCitas extends JFrame {
                 return;
             }
             
-            boolean encontrada = false;
-            try {
-                List<String[]> mascotas = new Libreria_generica.GenericDAO<Mascota>("src/doc/mascota.txt").cargarTodo();
-                for (String[] m : mascotas) {
-                    // m[0] es ID, m[1] es Nombre, m[6] es Propietario
-                    if (m[0].equalsIgnoreCase(termino) || m[1].equalsIgnoreCase(termino)) {
-                        idMascotaSeleccionada = m[0]; // Guardamos el ID internamente
-                        txtMascota.setText(m[1]);
-                        
-                        // Extraer solo el nombre del dueño (ya que está guardado como "Cedula - Nombre")
-                        String dueñoFull = m[6];
-                        if(dueñoFull.contains("-")) {
-                            txtPropietario.setText(dueñoFull.split("-")[1].trim());
-                        } else {
-                            txtPropietario.setText(dueñoFull);
-                        }
-                        
-                        encontrada = true;
-                        break;
-                    }
+            String[] m = controller.buscarMascota(termino);
+            if (m != null) {
+                idMascotaSeleccionada = m[0];
+                txtMascota.setText(m[1]);
+                String duenoFull = m[6];
+                if (duenoFull.contains("-")) {
+                    txtPropietario.setText(duenoFull.split("-")[1].trim());
+                } else {
+                    txtPropietario.setText(duenoFull);
                 }
-            } catch (Exception ex) {
-                System.err.println("Error al leer mascotas: " + ex.getMessage());
-            }
-
-            if (!encontrada) {
+            } else {
                 JOptionPane.showMessageDialog(this, "Mascota no encontrada en el sistema.", "No existe", JOptionPane.ERROR_MESSAGE);
                 idMascotaSeleccionada = "";
                 txtMascota.setText("");
@@ -185,36 +167,34 @@ public class ViewCitas extends JFrame {
             }
         });
 
-        // EVENTO: AGENDAR CITA
         btnAgendar.addActionListener(e -> {
             if (idMascotaSeleccionada.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Debe buscar y seleccionar una mascota primero.");
                 return;
             }
 
-            String fecha = txtFecha.getText();
-            String hora = txtHora.getText();
+            String fecha = txtFecha.getText().trim();
+            String hora = txtHora.getText().trim();
             String motivo = cbMotivo.getSelectedItem().toString();
 
-            if (fecha.isEmpty() || hora.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Llene la fecha y la hora.");
+            String validacion = controller.validarFormatos(fecha, hora);
+            if (!validacion.equals("OK")) {
+                JOptionPane.showMessageDialog(this, validacion, "Error de Validación", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            if (!controller.validarFormatos(fecha, hora)) {
-                JOptionPane.showMessageDialog(this, "Formato incorrecto.\nFecha: DD/MM/AAAA\nHora: HH:MM", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // Agendamos usando el ID de la mascota, no el nombre
-            if(controller.agendarCita(idMascotaSeleccionada, fecha, hora, motivo)) {
+            if (controller.agendarCita(idMascotaSeleccionada, fecha, hora, motivo)) {
                 JOptionPane.showMessageDialog(this, "Cita agendada con éxito.");
                 limpiarCampos();
                 llenarTabla();
             }
         });
 
-        btnLimpiar.addActionListener(e -> limpiarCampos());
+        btn_Regresar.addActionListener(e -> {
+            new menu().setVisible(true);
+            dispose();
+        });
+
         llenarTabla();
         setLocationRelativeTo(null);
     }
@@ -230,15 +210,13 @@ public class ViewCitas extends JFrame {
 
     private void llenarTabla() {
         modeloTabla.setRowCount(0);
-        try {
-            List<String[]> lista = new Libreria_generica.GenericDAO<Cita>("src/doc/citas.txt").cargarTodo();
-            if (lista != null) {
-                for (String[] r : lista) {
-                    if (r.length == 5) modeloTabla.addRow(r);
+        List<String[]> lista = controller.obtenerTodasLasCitas();
+        if (lista != null) {
+            for (String[] r : lista) {
+                if (r.length == 5) {
+                    modeloTabla.addRow(r);
                 }
             }
-        } catch (IOException e) {
-            System.err.println("Error al cargar la tabla: " + e.getMessage());
         }
     }
 }
